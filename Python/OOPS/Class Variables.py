@@ -1,18 +1,26 @@
-# Reference : https://youtu.be/BJ-VvGyQxho?si=PkKi03VpJ43HqUgs
+"""Class Variables demonstration.
+
+Reference: https://youtu.be/BJ-VvGyQxho?si=PkKi03VpJ43HqUgs
+"""
+
 
 class Employee():
+    """Basic Employee class without class variables."""
+
     def __init__(self, firstname, lastname, salary):
-        # Intance as the first arg, self is just a convention, we can use any
+        # Instance as the first arg, self is just a convention, we can use any
         self.firstname = firstname
         self.lastname = lastname
         self.email = firstname + lastname + "@gmail.com"
         self.salary = salary
 
     def fullname(self):
+        """Return the full name of the employee."""
         # self refers to this instance of the class
         return self.firstname + " " + self.lastname
 
     def applyraise(self):
+        """Apply a salary raise."""
         self.salary = int(self.salary * 1.05)
 
 
@@ -28,10 +36,12 @@ print("After raise salary : ", pvp.salary)
 
 
 class Employee():
+    """Employee class with raise percentage as class variable."""
+
     raise_perc = 1.05
 
     def __init__(self, firstname, lastname, salary):
-        # Intance as the first arg, self is just a convention, we can use any
+        # Instance as the first arg, self is just a convention, we can use any
         self.firstname = firstname
         self.lastname = lastname
         self.email = firstname + lastname + "@gmail.com"
@@ -80,12 +90,14 @@ print(pvp.raise_perc)
 
 
 class Employee():
+    """Employee class with employee count tracking."""
+
     # employee_count should be consistent throughout the instances and class
     employee_count = 0
     raise_perc = 1.05
 
     def __init__(self, firstname, lastname, salary):
-        # Intance as the first arg, self is just a convention, we can use any
+        # Instance as the first arg, self is just a convention, we can use any
         self.firstname = firstname
         self.lastname = lastname
         self.email = firstname + lastname + "@gmail.com"

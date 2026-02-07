@@ -1,6 +1,8 @@
-# Implementation of simple ATM Machime logic using class
+"""Implementation of simple ATM Machine logic using class."""
+
 
 class ATM():
+    """Simple ATM machine implementation with basic banking operations."""
     # Class variable
     wrong_pin_entered = 0
 
@@ -10,6 +12,7 @@ class ATM():
         self.menu()
 
     def menu(self):
+        """Display the main menu and handle user input."""
         user_input = input("Hello, welcome to SBI ATM. "
                            "Please select an option from the menu below : \n"
                            "1. Set pin \n"
@@ -39,6 +42,7 @@ class ATM():
             self.menu()
 
     def enter_and_validated_pin(self):
+        """Validate user entered PIN and handle wrong attempts."""
         pin_entered = input("Please enter your pin : ")
         if self.pin is None:
             print("Please set your pin first.")
@@ -53,15 +57,18 @@ class ATM():
         return False
 
     def set_pin(self):
+        """Allow user to set their PIN."""
         pin = input("Please enter pin : ")
         self.pin = pin
         print("Pin set successfully")
 
     def check_balance(self):
+        """Display current account balance after PIN validation."""
         if self.enter_and_validated_pin():
             print(f"Current balance of the account - {self.amount}")
 
     def withdraw_money(self):
+        """Allow user to withdraw money after PIN validation."""
         if self.enter_and_validated_pin():
             amount_to_be_withdrawn = int(input("Please enter the amount : "))
             if amount_to_be_withdrawn > self.amount:
@@ -71,6 +78,7 @@ class ATM():
                 print("Please collect your cash")
 
     def deposit_money(self):
+        """Allow user to deposit money after PIN validation."""
         if self.enter_and_validated_pin():
             amount_to_be_deposited = int(input("Please enter the amount : "))
             self.amount += amount_to_be_deposited

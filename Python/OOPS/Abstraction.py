@@ -1,1 +1,1 @@
-# Abstraction
+"""Abstraction demonstration."""

@@ -1,7 +1,11 @@
-# Reference : https://youtu.be/RSl87lqOXDE?si=edal_68UsPPfdRnu
+"""Inheritance - Creating Subclasses demonstration.
 
-# Inheritance
+Reference: https://youtu.be/RSl87lqOXDE?si=edal_68UsPPfdRnu
+"""
+
+
 class Employee():
+    """Base Employee class for inheritance examples."""
     raise_perc = 1.05
 
     def __init__(self, firstname, lastname, salary):
@@ -11,9 +15,11 @@ class Employee():
         self.salary = salary
 
     def fullname(self):
+        """Return the full name of the employee."""
         return self.firstname + " " + self.lastname
 
     def applyraise(self):
+        """Apply a salary raise."""
         self.salary = int(self.salary * Employee.raise_perc)
 
 
@@ -22,11 +28,14 @@ joe = Employee("Joe", "Smith", 20000)
 
 
 class Developers(Employee):
+    """Developer class that extends Employee with programming language."""
+
     def __init__(self, firstname, lastname, salary, primary_language):
         super().__init__(firstname, lastname, salary)
         self.primary_language = primary_language
 
     def get_primary_language(self):
+        """Get the developer's name and primary programming language."""
         return super().fullname() + " - " + self.primary_language
 
 
@@ -38,6 +47,8 @@ Grok = Developers("Grok", "XMusk", 67890, "LLM")
 
 
 class Managers(Developers):
+    """Manager class that extends Developers with team management capabilities."""
+
     level = "E4"
 
     def __init__(self, firstname, lastname, salary, primary_language,
@@ -139,7 +150,10 @@ class Managers(Developers):
 # Python does not support method overloading in the traditional sense.
 # We can achieve similar functionality using default args or *args & **kwargs.
 class Calculator:
+    """Calculator class demonstrating method overloading simulation."""
+
     def add(self, nums1, nums2, nums3=0):
+        """Add two or three numbers."""
         return nums1 + nums2 + nums3
 
 
@@ -158,21 +172,28 @@ print(calc.add(1, 2, 3))   # Output: 6
 # Which version (B's or C's) should be executed?
 
 class A:
+    """Base class A for diamond problem demonstration."""
+
     def method(self):
         print("Method in class A")
 
 
 class B(A):
+    """Class B inheriting from A."""
+
     def method(self):
         print("Method in class B")
 
 
 class C(A):
+    """Class C inheriting from A."""
+
     def method(self):
         print("Method in class C")
 
 
 class D(B, C):
+    """Class D inheriting from both B and C (diamond problem)."""
     pass
 
 
@@ -190,16 +211,21 @@ d.method()  # Output: Method in class B
 
 # Real life example of Prefer composition over inheritance
 class Employee:
+    """Employee class for composition example."""
+
     def __init__(self, name):
         self.name = name
 
 
 class Department:
+    """Department class demonstrating composition over inheritance."""
+
     def __init__(self, name):
         self.name = name
         self.employees = []
 
     def add_employee(self, employee):
+        """Add an employee to the department."""
         self.employees.append(employee)
 
 # Refer Docs.md for more details on composition vs inheritance

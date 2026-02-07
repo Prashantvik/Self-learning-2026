@@ -1,11 +1,17 @@
-# Reference : https://youtu.be/rq8cL2XMM5M?si=8sVWjSnZxp7LvUc-
+"""Class methods and Static methods demonstration.
+
+Reference: https://youtu.be/rq8cL2XMM5M?si=8sVWjSnZxp7LvUc-
+"""
 import datetime
 
 
-# CLASS METHODS
-# Regular methods in a class automaticaly takes an insatnce as first arg
-# By conventation instance arg is called self
 class Employee():
+    """Employee class demonstrating class methods and static methods.
+
+    CLASS METHODS:
+    Regular methods in a class automatically take an instance as first arg.
+    By convention instance arg is called self.
+    """
     raise_perc = 1.05
 
     def __init__(self, firstname, lastname, salary):
@@ -15,15 +21,18 @@ class Employee():
         self.salary = salary
 
     def fullname(self):
+        """Return the full name of the employee."""
         return self.firstname + " " + self.lastname
 
     def applyraise(self):
+        """Apply a salary raise."""
         self.salary = int(self.salary * Employee.raise_perc)
 
-    # Decorater classmethod, common convention for class is cls
+    # Decorator classmethod, common convention for class is cls
     # In class method, class is passed as the first argument
     @classmethod
     def set_raise_pec(cls, raise_perc):
+        """Set the raise percentage for all employees (class method)."""
         cls.raise_perc = raise_perc
 
 
@@ -44,10 +53,11 @@ pvp_str = "Prashant-Vikram-10000"
 emp_str = "Jane-Doe-80000"
 
 
-# Real life exammple of using class method as constructor
+# Real life example of using class method as constructor
 # Click on datetime in vscode and search @class in the datetime.py
 # import datetime
 class Employee():
+    """Employee class with class method as alternative constructor."""
     raise_perc = 1.05
 
     def __init__(self, firstname, lastname, salary):
@@ -64,11 +74,13 @@ class Employee():
 
     @classmethod
     def set_raise_pec(cls, raise_perc):
+        """Set the raise percentage for all employees (class method)."""
         cls.raise_perc = raise_perc
 
     # Class method to instantiate an object | Alternative constructor
     @classmethod
     def from_string(cls, emp_str):
+        """Create Employee object from string format (alternative constructor)."""
         firstname, lastname, salary = emp_str.split("-")
         return cls(firstname, lastname, salary)  # Note
 
@@ -83,10 +95,11 @@ print(jane.salary)
 
 
 # STATIC METHODS
-# Regular methods and class methods takes self and cls as first arg
+# Regular methods and class methods take self and cls as first arg
 # Meanwhile in static method, nothing is passed as first arg
 # Static method exists solely for logical connection within the class
 class Employee():
+    """Employee class demonstrating static methods."""
     raise_perc = 1.05
 
     def __init__(self, firstname, lastname, salary):
@@ -113,6 +126,7 @@ class Employee():
 
     @staticmethod
     def is_workday(day):
+        """Check if a given day is a workday (static method)."""
         if day.weekday() == 5 or day.weekday() == 6:
             return False
         return True

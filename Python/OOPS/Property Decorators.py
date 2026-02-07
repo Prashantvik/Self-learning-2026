@@ -1,1 +1,1 @@
-# Property Decorators - Getters, Setters, and Deleters
+"""Property Decorators - Getters, Setters, and Deleters demonstration."""

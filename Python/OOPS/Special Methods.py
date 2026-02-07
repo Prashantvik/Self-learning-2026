@@ -1,22 +1,30 @@
-# Reference : https://youtu.be/3ohzBxoFHAY?si=2RxSZpfrHL5Sn5mH
-# Reference : https://www.tutorialsteacher.com/python/magic-methods-in-python
+"""Special Methods: Magic/Dunder methods [Double Underscore Methods]
 
-# Special Methods : Magic/Dunder methods [Double Underscore Methods]
-# Use case : When we want to define how our objects should behave with
+References:
+- https://youtu.be/3ohzBxoFHAY?si=2RxSZpfrHL5Sn5mH
+- https://www.tutorialsteacher.com/python/magic-methods-in-python
+"""
+
+
+# Use case: When we want to define how our objects should behave with
 # built-in functions or operators, we can use special methods. These
 # methods allow us to customize the behavior of our objects when they
 # are used with certain operations.
 
 # Special methods are not called directly, but are invoked by the Python
 # interpreter when certain operations are performed on the objects.
-# Magic methods gets trigered automatically like init when object is created.
+# Magic methods get triggered automatically like __init__ when object is created.
 
-# Constructors and Destructors : __init__() and __del__()
-# During application development, we often need to perform some setup when an
-# object is created, such as initializing attributes or establishing
-# connections and performing cleanup when an object is destroyed, such as 
-# closing connections or releasing resources
+
 class Employee():
+    """Employee class demonstrating special methods (magic/dunder methods).
+
+    Constructors and Destructors: __init__() and __del__()
+    During application development, we often need to perform some setup when an
+    object is created, such as initializing attributes or establishing
+    connections and performing cleanup when an object is destroyed, such as 
+    closing connections or releasing resources.
+    """
     raise_perc = 1.05
 
     # Dunder method : __init__() - Constructor
@@ -27,33 +35,37 @@ class Employee():
         self.salary = salary
 
     def fullname(self):
+        """Return the full name of the employee."""
         return self.firstname + " " + self.lastname
 
     def applyraise(self):
+        """Apply a salary raise."""
         self.salary = int(self.salary * Employee.raise_perc)
 
-    # Dunder method : __str__() - String representation of the object
-    # This method is called when we print the object or when we use str()
-    # function on the object
     def __str__(self):
+        """String representation of the object (called by print() and str())."""
         return f"Employee: {self.fullname()} - {self.email}"
 
-    # Dunder method : __repr__() - Official string representation of the object
+    # Dunder method: __repr__() - Official string representation of the object
     # This method is called when we use repr() function on the object or when
     # we inspect the object in the console
     def __repr__(self):
+        """Official string representation of the object (called by repr())."""
         return f"Employee('{self.firstname}','{self.lastname}',{self.salary})"
 
     def __add__(self, other):
+        """Add two Employee objects (returns sum of salaries)."""
         if isinstance(other, Employee):
             return self.salary + other.salary
         return NotImplemented
         # Fallback to default behavior if other is not an Employee
 
     def __len__(self):
+        """Return the length of the employee's full name."""
         return len(self.fullname())
 
     def __del__(self):
+        """Destructor method called when object is destroyed."""
         print(f"Employee {self.fullname()} is being deleted.")
 
 
