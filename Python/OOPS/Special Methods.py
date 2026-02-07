@@ -1,4 +1,5 @@
 # Reference : https://youtu.be/3ohzBxoFHAY?si=2RxSZpfrHL5Sn5mH
+# Reference : https://www.tutorialsteacher.com/python/magic-methods-in-python
 
 # Special Methods : Magic/Dunder methods [Double Underscore Methods]
 # Use case : When we want to define how our objects should behave with
