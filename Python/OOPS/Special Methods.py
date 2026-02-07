@@ -9,6 +9,12 @@
 # Special methods are not called directly, but are invoked by the Python
 # interpreter when certain operations are performed on the objects.
 # Magic methods gets trigered automatically like init when object is created.
+
+# Constructors and Destructors : __init__() and __del__()
+# During application development, we often need to perform some setup when an
+# object is created, such as initializing attributes or establishing
+# connections and performing cleanup when an object is destroyed, such as 
+# closing connections or releasing resources
 class Employee():
     raise_perc = 1.05
 

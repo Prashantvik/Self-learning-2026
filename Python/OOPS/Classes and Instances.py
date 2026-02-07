@@ -44,3 +44,21 @@ print(pvp.fullname())  # Method
 
 # Calling method using the class and passing the instance as the arg
 Employee.fullname(emp1)
+
+
+# Self is just a convention. Self is used to refer to the instance of the class
+class Person():
+    def __init__(self, name):
+        self.name = name
+        print(id(self))
+
+    def sayhi(self):
+        print("Hi, I am " + self.name)
+
+
+print("=" * 30)
+pvp = Person("Prashant")
+print(id(pvp))
+print("The id of the instance is same as the id of self,\n" \
+      "which means self refers to the instance of the class.")
+print("=" * 30)
