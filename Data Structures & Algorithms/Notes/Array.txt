@@ -1,0 +1,16 @@
+"""Notes, tips & tricks"""
+
+- Use of operators and output
+/  - gives exact division in decimal
+%  - gives the remainder
+// - gives the quotient
+
+- Two pointers approach
+Use two indices to scan from ends or same direction
+You can start at two places in an array at once like start, end and start, start + 1
+
+- How to define the min/max in python : Infinity
+mini = float('inf') 
+maxi = float('-inf')
+
+- 
