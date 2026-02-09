@@ -3,6 +3,8 @@
 Reference: https://youtu.be/ZDa-Z5JzLYM?si=kgP2W1LxC1ep278l
 Corey Schafer - Python OOP Tutorial
 
+End to end : https://medium.com/@aserdargun/advanced-oop-in-python-a5f6130da291
+
 Method is a function inside a class, attribute is a variable.
 Blueprint of an entity is a class.
 """

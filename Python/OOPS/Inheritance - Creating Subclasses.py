@@ -1,5 +1,7 @@
 """Inheritance - Creating Subclasses demonstration.
-
+Single Inheritance, Multilevel Inheritance, Method Resolution Order (MRO),
+Method Overriding, Method Overloading, Diamond Problem, and Prefer Composition
+over Inheritance are covered in this code.
 Reference: https://youtu.be/RSl87lqOXDE?si=edal_68UsPPfdRnu
 """
 

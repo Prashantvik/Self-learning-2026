@@ -2,6 +2,7 @@
 
 #### Good Reference : https://www.youtube.com/watch?v=Mf2RdpEiXjU
 #### Default Reference : https://www.youtube.com/@coreyms
+#### End to end : https://medium.com/@aserdargun/advanced-oop-in-python-a5f6130da291
 
 ### Class and Object
 - **Class**: A blueprint for creating objects. It defines a set of attributes and methods that the created objects will have. For example, a `Car` class might have attributes like `make`, `model`, and `year`, and methods like `start_engine()` and `stop_engine()`.
