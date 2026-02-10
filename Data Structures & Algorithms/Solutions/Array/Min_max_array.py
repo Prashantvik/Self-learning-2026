@@ -1,3 +1,4 @@
+# https://www.geeksforgeeks.org/maximum-and-minimum-in-an-array/
 # Maximum and minimum of an array using minimum number of comparisons
 
 arr = [3, 5, 4, 1, 9]  # Output : [1, 9]
