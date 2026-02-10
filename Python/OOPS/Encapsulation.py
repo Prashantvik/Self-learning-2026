@@ -167,7 +167,7 @@ class EncapsulatedATM():
         # After once operation is done, menu will be shown again to the
         # user until user selects exit option
         if user_input == "1":
-            self.set_pin()
+            self.__set_pin()
             self.menu()
         elif user_input == "2":
             self.check_balance()
@@ -184,7 +184,7 @@ class EncapsulatedATM():
             print("Invalid input. Please try again.")
             self.menu()
 
-    def enter_and_validated_pin(self):
+    def __enter_and_validated_pin(self):
         """Validate user entered PIN and handle wrong attempts."""
         pin_entered = input("Please enter your pin : ")
         if self.pin is None:
@@ -199,7 +199,7 @@ class EncapsulatedATM():
             ATM.wrong_pin_entered += 1
         return False
 
-    def set_pin(self):
+    def __set_pin(self):
         """Allow user to set their PIN."""
         pin = input("Please enter pin : ")
         self.pin = pin
@@ -207,12 +207,12 @@ class EncapsulatedATM():
 
     def check_balance(self):
         """Display current account balance after PIN validation."""
-        if self.enter_and_validated_pin():
+        if self.__enter_and_validated_pin():
             print(f"Current balance of the account - {self.amount}")
 
     def withdraw_money(self):
         """Allow user to withdraw money after PIN validation."""
-        if self.enter_and_validated_pin():
+        if self.__enter_and_validated_pin():
             amount_to_be_withdrawn = int(input("Please enter the amount : "))
             if amount_to_be_withdrawn > self.amount:
                 print("Insufficient balance")
@@ -222,7 +222,7 @@ class EncapsulatedATM():
 
     def deposit_money(self):
         """Allow user to deposit money after PIN validation."""
-        if self.enter_and_validated_pin():
+        if self.__enter_and_validated_pin():
             amount_to_be_deposited = int(input("Please enter the amount : "))
             self.amount += amount_to_be_deposited
             print("Amount has been deposited, thank-you!")
@@ -234,8 +234,9 @@ class EncapsulatedATM():
 
     def get_base_amount(self):
         """Get annual package including bonus."""
-        bonus = self.__calculate_interest()
-        return self.__amount + bonus
+        if self.__enter_and_validated_pin():
+            bonus = self.__calculate_interest()
+            return self.__amount + bonus
 
 
 pvp = EncapsulatedATM(10000)
@@ -311,95 +312,6 @@ print("="*50, "\nENCAPSULATION SUMMARY:\n1. Public attributes: accessible from\
 # Nothing in python is truly private, but these conventions helps
 
 # Getter and Setter in Encapsulation
+# If we're using setters to set some private attribute, what's the use of
+# implementing encapsulation here
 # Refer : Python/OOPS/Property Decorators.py
-
-
-class ATM():
-    """Simple ATM machine implementation with basic banking operations."""
-    # Class variable
-    wrong_pin_entered = 0
-
-    def __init__(self, amount=0):
-        self.pin = None
-        self.amount = amount
-
-    def start(self):
-        self.menu()
-
-    def menu(self):
-        """Display the main menu and handle user input."""
-        user_input = input("Hello, welcome to SBI ATM. "
-                           "Please select an option from the menu below : \n"
-                           "1. Set pin \n"
-                           "2. Check balance \n"
-                           "3. Withdraw money \n"
-                           "4. Deposit money \n"
-                           "5. Exit \n")
-
-        # After once operation is done, menu will be shown again to the
-        # user until user selects exit option
-        if user_input == "1":
-            self.set_pin()
-            self.menu()
-        elif user_input == "2":
-            self.check_balance()
-            self.menu()
-        elif user_input == "3":
-            self.withdraw_money()
-            self.menu()
-        elif user_input == "4":
-            self.deposit_money()
-            self.menu()
-        elif user_input == "5":
-            return
-        else:
-            print("Invalid input. Please try again.")
-            self.menu()
-
-    def enter_and_validated_pin(self):
-        """Validate user entered PIN and handle wrong attempts."""
-        pin_entered = input("Please enter your pin : ")
-        if self.pin is None:
-            print("Please set your pin first.")
-            self.set_pin()
-        if self.pin == pin_entered:
-            return True
-        print("Wrong pin entered, after 3 wrong tries atm will be blocked.")
-        if ATM.wrong_pin_entered == 3:
-            print("Your ATM is blocked now due to multiple wrong pins tries.")
-        else:
-            ATM.wrong_pin_entered += 1
-        return False
-
-    def set_pin(self):
-        """Allow user to set their PIN."""
-        pin = input("Please enter pin : ")
-        self.pin = pin
-        print("Pin set successfully")
-
-    def check_balance(self):
-        """Display current account balance after PIN validation."""
-        if self.enter_and_validated_pin():
-            print(f"Current balance of the account - {self.amount}")
-
-    def withdraw_money(self):
-        """Allow user to withdraw money after PIN validation."""
-        if self.enter_and_validated_pin():
-            amount_to_be_withdrawn = int(input("Please enter the amount : "))
-            if amount_to_be_withdrawn > self.amount:
-                print("Insufficient balance")
-            else:
-                self.amount -= amount_to_be_withdrawn
-                print("Please collect your cash")
-
-    def deposit_money(self):
-        """Allow user to deposit money after PIN validation."""
-        if self.enter_and_validated_pin():
-            amount_to_be_deposited = int(input("Please enter the amount : "))
-            self.amount += amount_to_be_deposited
-            print("Amount has been deposited, thank-you!")
-
-
-Prashant = ATM(amount=1000)
-
-# Prashant.start()
