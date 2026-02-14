@@ -15,3 +15,8 @@ DE Specific :
 - Modules and packages like pipenv, logging etc
 - Make a list of these packages 
 - Very low priority
+
+
+OOPS Reference docs (read later) :
+- https://medium.com/@aserdargun/advanced-oop-in-python-a5f6130da291
+- https://medium.com/@ramanbazhanau/mastering-advanced-oop-concepts-in-python-advanced-class-features-a8790fa2b5a2
