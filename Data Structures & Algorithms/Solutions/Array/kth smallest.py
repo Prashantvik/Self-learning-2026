@@ -6,7 +6,7 @@ arr = [10, 5, 4, 3, 48, 6, 2, 33, 53, 10]
 k = 4
 
 
-# TC : O(nlogn) | SC : O(1)
+# TC : O(nlogn) | SC : O(1
 def kth_smallest(arr, k):
     arr.sort()
     return arr[k-1]
@@ -49,6 +49,7 @@ def partition(nums, low, high):
     i = low + 1
     j = high
     while True:
+        # Handle edge condition, pivot <= and >= because duplicates
         while i <= j and nums[i] <= pivot:
             i += 1
         while i <= j and nums[j] >= pivot:
