@@ -32,7 +32,7 @@ nums = [2, 0, 2, 1, 1, 0]
 print(sortColors(nums))
 
 
-# Very important to understand this middle step for further optimisation
+# Very important to understand this indexdle step for further optimisation
 def sortColors_twopass(nums):
     low, zeros, end = 0, 0, len(nums)-1
 
@@ -63,16 +63,16 @@ print(sortColors_twopass(nums))
 # Come up with a one-pass algorithm using only constant extra space
 # Two pointers | QuickSort Partition | Optimising the twopass function
 def sortColors_onepass(nums):
-    low, mid, high = 0, 0, len(nums)-1
-    while mid <= high:
-        if nums[mid] == 0:
-            nums[low], nums[mid] = nums[mid], nums[low]
+    low, index, high = 0, 0, len(nums)-1
+    while index <= high:
+        if nums[index] == 0:
+            nums[low], nums[index] = nums[index], nums[low]
             low += 1
-            mid += 1
-        elif nums[mid] == 1:
-            mid += 1
+            index += 1
+        elif nums[index] == 1:
+            index += 1
         else:
-            nums[mid], nums[high] = nums[high], nums[mid]
+            nums[index], nums[high] = nums[high], nums[index]
             high -= 1
 
     return nums
