@@ -20,4 +20,10 @@ Algorithm : https://www.youtube.com/watch?v=7h1s2SojIRw | Abdul Bari
 Analysis  : https://youtu.be/-qOVVRIZzao?si=dFMlNV0xqsOmvTQE
 Article   : https://medium.com/nerd-for-tech/quick-select-algorithm-17ac146b6218
 
+- Use of map/dict in python
+if num not in map.keys():
+    map[num] = 1
+else:
+    map[num] += 1
+
 - 
