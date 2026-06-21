@@ -1,7 +1,7 @@
 ## Daily SQL learnings 
 
 ### 20th June 2026 
-#### Aggregation & Joins
+#### Aggregation & Joins : Food Delivery
 1. This query will be run daily by a BI dashboard for every city DoorDash operates in. At 500M rows in orders, what index or partition strategy would you recommend, and where does this query break down first?
 500M rows — indexing & where the query breaks
 * Your answer : 
@@ -43,7 +43,7 @@ Pattern to memorize: never rescan raw fact tables for dashboards. Pre-aggregate 
 * Pre-aggregation pattern — raw fact table → daily summary table → hourly incremental append → dashboard queries the summary. This is the answer to almost every "how would you scale this" question on reporting workloads.  
 
 
-#### Aggregation & Joins - Streaming
+#### Aggregation & Joins : Streaming
 1. The re-engagement team now wants is_lapsed broken out by genre — they want to know which genres lapsed users were listening to in their prior window. How does your query change, and what does that do to the grain of your output?
 ```
 WITH base AS (
@@ -113,4 +113,4 @@ Missing — the SCD/upsert answer  : The complete answer: on each daily run, re-
 
 
 ### 21st June 2026 
-#### 
+#### Aggregation & Joins : FinTech_Payments
