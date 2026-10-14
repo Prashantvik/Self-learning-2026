@@ -208,8 +208,99 @@ AND SECOND_PREV_MONTH_RANK IS NOT NULL;
 ```
 
 ## Problem 6 : SaaS/Marketplace | Notes to take
+- The sessionization template — commit this as a four-step unit. Step 1: LAG for gap. Step 2: flag session starts (NULL or gap > threshold). Step 3: running SUM of flags = session number. Step 4: GROUP BY user + session number → MIN/MAX/COUNT. This is the complete pattern. Everything else is a variation on it.
+- Dynamic thresholds via bridge tables — two-table design separates user→segment from segment→threshold. Changes to thresholds touch one row, not millions. Always ask: “what’s the default if a user has no segment?” and “what if the segment changes over time?”
+- SCD2 temporal joins — when a dimension attribute (like user segment) changes over time and you need to apply the value that was active at the time of each event, join on user_id AND event_time >= valid_from AND event_time < valid_to. This is the correct historical lookup pattern. We’ll cover SCD2 fully in Phase 7.
+- Incremental sessionization state — the three things you persist: user_id, last_session_num, last_event_at. On each run: join new events to state, check if first new event is within threshold of last_event_at, continue or start a session accordingly. Never reprocess history.
+- CASE branch order for tiered labels — always put the highest threshold first (>= 3 before >= 2). SQL evaluates top to bottom and stops at the first match. If you put >= 2 first, users with 3+ types would get labelled ‘medium’.  
+
+### Follow-up Questions :
+#### 1. A session where all events are the same event_type (e.g. five scrolls) has unique_event_types = 1 and event_count = 5. The product team calls this a “shallow session.” How would you add a column session_quality that labels each session as 'deep' (unique_event_types >= 3), 'medium' (2), or 'shallow' (1)?
+- In the last cte, I'd just add a case statement : case when unique_event_types >= 3 then 'deep' when unique_event_types >= 2 then 'medium' else 'shallow' end as session_quality.
+- Perfect. CASE in the final SELECT after aggregation is exactly right — unique_event_types only exists at session grain, so that's the only place this can go. Branch order is correct: ≥3 first, then ≥2, then shallow. No issues.
+
+#### 2. The 30-minute threshold is hardcoded. In production this threshold varies by user segment — power users get a 15-minute threshold, casual users get 45 minutes. How would you make this dynamic?
+- I'd have a bridge table which will have information about the user and it's segment - user_segment (user_id, segment, last_updated_at) and then join this table in session_flag cte. Another bridge table which will have the threshold as per the segment - segment_threshold (segment, threshold)
 - 
+```
+session_flags AS (
+    SELECT
+        events.user_id,
+        events.event_id,
+        events.event_type,
+        events.occurred_at,
+        CASE
+            WHEN prev_occurred_at IS NULL THEN 1
+            WHEN EXTRACT(EPOCH FROM (events.occurred_at - events.prev_occurred_at)) / 60 > sgth.threshold 
+            THEN 1 ELSE 0
+        END AS is_session_start
+    FROM events_with_gap events
+    INNER JOIN user_segment segments
+    ON segments.user_id = events.user_id
+    INNER JOIN segment_threshold sgth
+    ON segments.segment = sgth.segment
+)
+```
+##### What you got right
+- Two-table bridge design — user_segment and segment_threshold — is clean and correct. Separating user→segment from segment→threshold means you only update one row when a threshold changes, not one per user.
+Joining both tables into session_flags and replacing the hardcoded 30 with sgth.threshold is the right implementation point.
+Keeping INNER JOIN on both — correct, since a user with no segment or a segment with no threshold is a data quality problem, not a case to silently default.
+##### Two gaps to sharpen
+- Segment can change over time. Your user_segment table has last_updated_at — good instinct. But if you join on user_id alone and the user changed segment mid-dataset, you'll apply today's segment to historical events. The complete answer: join on user_id and filter to the segment that was active at the time of the event — WHERE event.occurred_at >= segment.valid_from AND event.occurred_at < segment.valid_to. This is an SCD Type 2 lookup — Phase 7 territory, but naming it earns points now.
+- What's the default if a user has no segment? An interviewer will always ask this. Either: INNER JOIN drops them (data quality error), or LEFT JOIN + COALESCE(sgth.threshold, 30) defaults to 30 minutes. State which you'd choose and why.  
+**Your implementation is production-ready with one addition :**
+```
+session_flags AS (
+    SELECT
+        e.user_id, e.event_id, e.event_type, e.occurred_at,
+        CASE
+            WHEN prev_occurred_at IS NULL THEN 1
+            WHEN EXTRACT(EPOCH FROM (e.occurred_at - e.prev_occurred_at)) / 60
+                 > COALESCE(sgth.threshold, 30) THEN 1  -- default 30 if no segment
+            ELSE 0
+        END AS is_session_start
+    FROM events_with_gap e
+    LEFT JOIN user_segment us
+        ON us.user_id = e.user_id
+        -- SCD2: use segment active at event time
+        AND e.occurred_at >= us.valid_from
+        AND e.occurred_at <  us.valid_to
+    LEFT JOIN segment_threshold sgth
+        ON us.segment = sgth.segment
+)
+```
+
+#### 3. At 10B events, the running SUM window function is the most expensive operation. What would you do to make this query production-viable?
+**Your answer**
+- "Make it incremental" — right direction, but this needs to be a complete answer in an interview. An interviewer will say "how?" and you need to be specific.
+**Why the running SUM is expensive at scale**
+- The window function requires a global sort per user. PARTITION BY user_id ORDER BY occurred_at on 10B rows means the engine must shuffle all rows to co-locate each user's events on one node, then sort that user's events by time. With 500M users each averaging 20 events, the shuffle is 10B rows of data movement — the dominant cost.
+**What you actually do**
+- Incremental processing — only new events. Maintain a sessions table with the last session per user (last_session_end, last_session_num). Each run, pull only events since the last watermark. For each user, check if the first new event falls within 30 minutes of their last session end — if yes, it continues the existing session; if no, it starts a new one. This avoids reprocessing history entirely.
+- Partition the events table by date. PARTITION BY DATE(occurred_at) means each day's events are stored together. An incremental run only scans today's partition + the tail of yesterday's (to catch cross-midnight sessions). Without partitioning, even an incremental run scans the full table.
+- Carry forward session state. Store (user_id, last_session_num, last_event_at) in a state table updated each run. The next run joins new events to this state table to determine whether to continue or start a session — no window function over history needed at all.
+- If batch is unavoidable: partition the full run by user_id % N buckets and parallelize across N workers. Each worker handles a disjoint set of users — no cross-partition data movement. Available in Spark/Databricks via DISTRIBUTE BY user_id.
+- The complete answer: incremental + state table + date partitioning. "Make it incremental" is the right instinct — the interviewer wants the mechanism: what state do you persist, how do you join new events to it, and how do you avoid re-scanning history.
 
 
 
 
+## Problem 7 : Retention Cohorts/SAAS | Notes to take
+**The retention cohort template — four logical steps as a unit:**
+- Steps : 
+    1. cohort_base    → user_id + cohort_week (DATE_TRUNC of signup)
+    2. cohort_sizes   → COUNT(*) per cohort_week (the denominator)
+    3. activity_mapped → join activity, compute week_number = (activity_week - cohort_week) / 7
+    4. UNION week 0   → synthetic row per user at week_number = 0
+    5. GROUP BY cohort_week, week_number → COUNT(DISTINCT user_id)
+    6. JOIN cohort_sizes → retention_rate
+- Week 0 = 100% is a business invariant — enforce it in SQL with a synthetic UNION row, not by assumption. Any implementation that relies on activity data for week 0 is fragile.
+- UNION vs UNION ALL — UNION deduplicates (slower), UNION ALL keeps all rows (faster). Use UNION when combining a synthetic spine with real data that might overlap. Use UNION ALL when you know the sets are disjoint.
+- Week offset as integer — (activity_week - cohort_week) / 7 works in PostgreSQL (date minus date = integer days). In Snowflake/Redshift use DATEDIFF('week', cohort_week, activity_week). In BigQuery use DATE_DIFF(activity_week, cohort_week, WEEK). State your dialect assumption.
+
+
+## Problem 8 : Gap & Island detection | Notes to take
+
+
+### Follow-up Questions :
+#### 1.
